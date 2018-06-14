@@ -1,31 +1,68 @@
-import mysql.connector
-from mysql.connector import errorcode
 
-def open(l_User, l_Password,l_Database):
-    try:
-        conn = mysql.connector.connect(user= l_User, password= l_Password, database= l_Database)
-        return conn
-    except mysql.connection.Error as err:
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
-        elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-        else:
-            print(err)
-        return -1
+# coding: utf-8
+
+# In[34]:
+
+import logging
+import mysql.connector as db
+
+
+# In[43]:
+
+logging.basicConfig(level='DEBUG')
+
+
+# In[44]:
+
+log = logging.getLogger()
+
+
+# In[54]:
+
+class db_ops:
+    def __init__(self,user,password,host,port, database, log):
+        self.user= user
+        self.passw = password
+        self.host = host
+        self.port = port
+        self.db = database
+        self.conn = db.connection
+        self.log = log
     
-def close(conn):
-    try:
-        conn.close()
-        print("connection closed")
-    except mysql.connection.Error as err:
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
-        elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-        else:
-            print(err)
-
-
-      
+    def connect(self):
+        try:
+            self.conn = db.connect(user = self.user, password = self.passw,host = self.host, port = self.port, database = self.db)
+            return self.conn
+        except db.Error as err:
+            # raise some error 
+            self.log.error(err)
     
+    def close(self):
+        self.conn.commit()
+        self.conn.close()
+
+
+# In[ ]:
+
+
+
+
+# In[ ]:
+
+
+
+
+# In[ ]:
+
+
+
+
+# In[ ]:
+
+
+
+
+# In[ ]:
+
+
+
